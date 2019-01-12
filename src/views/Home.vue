@@ -33,14 +33,15 @@ export default {
     service.getUser().then(data => {
       console.log(data);
       this.updateUser(data.data);
-      this.userInfo = this.getUser;
+      this.userInfo = data.data;
       this.tel = this.userInfo.tel;
     });
   },
   methods: {
     updateTel() {
-      this.userInfo.tel = this.tel;
-      this.updateUser(this.userInfo);
+      var data = JSON.parse(JSON.stringify(this.userInfo));
+      data.tel = this.tel;
+       this.updateUser(data);
       this.userInfo = this.getUser;
     },
     ...mapActions({
