@@ -15,14 +15,14 @@ const createLintingRule = () => ({
   include: [resolve('src'), resolve('test')],
   options: {
     formatter: require('eslint-friendly-formatter'),
-    emitWarning: !config.dev.showEslintErrorsInOverlay
+    //emitWarning: !config.dev.showEslintErrorsInOverlay
   }
 })
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.js',
+    app: './src/app.js',
     demo: './src/demo.js'
   },
   output: {

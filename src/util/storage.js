@@ -1,8 +1,8 @@
-export class localStorageUtil{
+export class localStorageUtil {
     static _preKey = 'xy-';
     static setItem(key, value) {
         key = `${this._preKey}${key}`;
-        if(value instanceof Object){
+        if (value instanceof Object) {
             value = JSON.stringify(value);
         }
         try {
@@ -17,12 +17,10 @@ export class localStorageUtil{
 }
 
 export class cookieUtil {
-
     static init() {
-        this._defaultExpSec = 7*24*60*60*1000;
+        this._defaultExpSec = 7 * 24 * 60 * 60 * 1000;
         this._equalSyb = '=';
     }
-
     /**
      *
      *
@@ -33,11 +31,10 @@ export class cookieUtil {
      * @returns
      * @memberof cookieUtil
      */
-    static setCookie(key,value,expSec) {
-
-        if(!expSec){
-            if(expSec == 0) {
-                return ;
+    static setCookie(key, value, expSec) {
+        if (!expSec) {
+            if (expSec === 0) {
+                return;
             }
             expSec = this._defaultExpSec;
         }
@@ -47,8 +44,8 @@ export class cookieUtil {
     }
     static getCookie(key) {
         const reg = new RegExp(`${key}=*;|${key}=.*$`);
-        const keyValue =document.cookie.match(reg);
-        if(keyValue && keyValue[0]){
+        const keyValue = document.cookie.match(reg);
+        if (keyValue && keyValue[0]) {
             return decodeURIComponent(keyValue[0].split(this._equalSyb)[1]);
         }
     }

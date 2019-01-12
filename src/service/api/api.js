@@ -1,7 +1,7 @@
-import axios from 'axios'
-import Qs from 'qs'
-
-const CancelToken = axios.CancelToken;
+import axios from 'axios';
+import qs from 'qs';
+import {cookieUtil} from '@/util/storage';
+// const CancelToken = axios.CancelToken;
 
 const service = axios.create({
     timeout: 5000,
@@ -15,41 +15,41 @@ const service = axios.create({
     withCredentials: true
 });
 
-//封装
+// 封装
 // POST传参序列化
 axios.interceptors.request.use(
     config => {
-      if (config.method === 'post' && config.headers.post['Content-Type'] === 'application/x-www-form-urlencoded;charset=UTF-8' && !config.headers['Content-Type']) {
-        config.data = Qs.stringify(config.data)
-      }
-      if (cookieUtil.get('csrfToken') && !(/^(GET|HEAD|OPTIONS|TRACE)$/.test(config.method))) { // 判断是否存在token，如果存在的话，则每个http header都加上token
-        config.headers['x-csrf-token'] = cookieUtil.get('csrfToken')
-      }
-  
-      function getQueryString (name) {
-        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i')
-        var r = window.location.search.substr(1).match(reg)
-        if (r != null) return unescape(r[2])
-        return null
-      }
-      var channel = getQueryString('channel')
-      var headers = {
-        headers: {
-          basicParams: '{"channel":' + channel + ',"token":"' + (cookieUtil.get(channel) ? cookieUtil.get(channel) : '') + '","platform":"' + global.platform + '"}'
+        if (config.method === 'post' && config.headers.post['Content-Type'] === 'application/x-www-form-urlencoded;charset=UTF-8' && !config.headers['Content-Type']) {
+            config.data = qs.stringify(config.data);
         }
-      }
-      // var headers = {
-      //   headers: {
-      //     basicParams: '{"channel":20180331160838983010,"token":"72d20441a3ef5c70c3d8ceceefb7b277","platform":"h5"}'
-      //   }
-      // }
-  
-      config.headers['basicParams'] = headers.headers.basicParams
-      return config
+        if (cookieUtil.get('csrfToken') && !(/^(GET|HEAD|OPTIONS|TRACE)$/.test(config.method))) { // 判断是否存在token，如果存在的话，则每个http header都加上token
+            config.headers['x-csrf-token'] = cookieUtil.get('csrfToken');
+        }
+
+        function getQueryString(name) {
+            var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+        var channel = getQueryString('channel');
+        var headers = {
+            headers: {
+                basicParams: '{"channel":' + channel + ',"token":"' + (cookieUtil.get(channel) ? cookieUtil.get(channel) : '') + '","platform":"' + global.platform + '"}'
+            }
+        };
+        // var headers = {
+        //   headers: {
+        //     basicParams: '{"channel":20180331160838983010,"token":"72d20441a3ef5c70c3d8ceceefb7b277","platform":"h5"}'
+        //   }
+        // }
+
+        config.headers['basicParams'] = headers.headers.basicParams;
+        return config;
     },
     error => {
-      return Promise.reject(error)
-    })
+        return Promise.reject(error);
+    });
 // service.interceptors.request.use(config => {
 //     config.hearders.post['Content-type'] = 'application/x-www.form-urlencoded';
 //     return config;
@@ -64,8 +64,6 @@ service.interceptors.response.use(
     },
     error => {
         if (error.response) {
-
-
             // switch (error.response.status) {
             //     case 401:
             //       // cookieUtil.set('token', {path:global.webSite})
@@ -86,7 +84,7 @@ service.interceptors.response.use(
             //   }
             return Promise.reject(error);
         } else {
-            return Promise.reject('no response');
+            return Promise.reject(new Error('no response'));
         }
     }
 );
@@ -95,7 +93,7 @@ const api = {
     /**
      *
      *
-     * @param {string} url 
+     * @param {string} url
      * @param {Object} params
      * @param {Object} requestOptions  配置其他参数
      */
@@ -103,19 +101,18 @@ const api = {
         const opts = {
             params: params,
             headers: {
-                Accecpt: "*/*"
+                Accecpt: '*/*'
             },
             paramsSerializer: function (params) {
                 return qs.stringify(params);
             }
-        }
-        return service.get(`${url}`, opts)
-
+        };
+        return service.get(`${url}`, opts);
     },
     /**
     *
     *
-    * @param {string} url 
+    * @param {string} url
     * @param {Object} params
     * @param {Object} requestOptions  配置其他参数
     */
@@ -124,3 +121,4 @@ const api = {
         return service.post(`${url}`, params, opts);
     }
 };
+export default api;

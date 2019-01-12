@@ -13,6 +13,11 @@ const portfinder = require('portfinder')
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
+
+const mock =require('./mock-analyze');
+require('./mock-config');
+
+
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
@@ -42,6 +47,20 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
+    },
+    before(app) {
+      
+      app.get(/.*/,(req,res,next)=>{
+        console.log(req.url)
+        if(/(\.\w+$)|(\/static)/.test(req.url)){
+          next();
+        }else{
+          mock.getData(req,res,next,'get');
+        }
+      });
+      app.post(/.*/,(req,res,next) => {
+        mock.getData(req,res,next,'post');
+      })
     }
   },
   plugins: [
@@ -55,7 +74,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'index.html',
-      chunks:['index'],
+      chunks:['app'],
       inject: true
     }),
     new HtmlWebpackPlugin({

@@ -1,4 +1,4 @@
-import index from '@/views/Home.vue'
+import index from '@/views/Home.vue';
 let routes = [{
   path: '/',
   name: 'index',
@@ -15,19 +15,19 @@ let routes = [{
   // which is lazy-loaded when the route is visited.
   component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
 }
-]
+];
 const gwdRoutes = [
   `demo1`
-]
+];
 gwdRoutes.map(item => {
   routes.push({
     path: `/gwd/${item}`,
     name: `${item}`,
     component: () =>
-            import(`@/views/gwd/${item}`),
+      import(`@/views/gwd/${item}`),
     meta: {
       auth: false
     }
-  })
-})
-export default routes
+  });
+});
+export default routes;
